@@ -1,4 +1,6 @@
-# Task 1 Answer
+# Session 1 Answer
+
+## Tasks 1-4
 
 I'm using ubuntu server 22.04.03 LTS for this task.
 the first thing that I did was to create two virtual machines in virtual box.
@@ -18,10 +20,38 @@ now we add static ip addresses to the host-only network interfaces on both machi
 
 then I added this line in /etc/sysctl.conf on Machine-A: (to enable ipv4 routing between different network interfaces)
 
-```net.ipv4.ip_forward=1```
+```sh
+net.ipv4.ip_forward=1
+```
 
 and then applied it using "```sudo sysctl -p /etc/sysctl.conf```"
 
 then I ran this command on Machine-A (enp0s3 is the name of the nat interface with internet access):
 
-```sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE```
+```sh
+sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
+```
+
+**now the task is completely done. (except that our iptable rulings aren't persistent).**
+
+## Task 5 (setup proxy or VPN)
+
+we are going to use ssh-tunnel for this task
+
+here's the commands we're using :
+
+```bash
+ssh -fND 1080 user@ip
+export https_proxy=127.0.0.1:1080
+export http_proxy=127.0.0.1:1080
+```
+
+then added the line below to this configuration file /etc/apt/apt.conf:
+
+```sh
+Acquire::http::Proxy "http://127.0.0.1:1080";
+```
+
+and now apt can use the http proxy that is running in the background by ssh-tunnel.
+
+### all done ✔
