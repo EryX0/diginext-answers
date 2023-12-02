@@ -1,0 +1,11 @@
+services:
+  haproxy:
+    image: haproxy:lts-alpine
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - /etc/letsencrypt/archive/s03diginext.ceusc.tk:/etc/letsencrypt/archive/s03diginext.ceusc.tk
+    ports:
+      - 80:80
+      - 443:443
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=0
