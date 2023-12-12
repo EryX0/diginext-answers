@@ -23,3 +23,9 @@ then got ssl certificate from certbot, made cert.pem and privkey.pem into one fi
 ```sh
 cat /path_to_cert/cert.pem | /path_to_cert/privkey.pem | /path_to_cert/combined-cert.pem
 ```
+
+then configured the 1 HAproxy and 3 nginx servers (to reverse proxy a webapp) with the files in the "part1" folder.
+
+## part 2
+
+to be written...
