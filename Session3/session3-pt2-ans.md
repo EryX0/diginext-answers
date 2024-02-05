@@ -84,26 +84,34 @@ docker cp mysql-master:/dbdump.db ./;
 now we copy database dump to our slave server using this scp (or whatever).
 and then apply these queries in the slave node, (line 5 is because of new caching_sha2_password algorithm used for authentication in mysql 8.0)
 
-we should run (```SHOW MASTER STATUS\G```) in the master node to get the last two variables for the replication, and it changes everytime.
+next, we need to know the master's bin log file and its position,
+we should execute this QUERY (```SHOW MASTER STATUS\G```) in the mysql master node to get "SOURCE_LOG_FILE" and "SOURCE_LOG_POS"
+
+and then in the slave node, we execute this query :
 
 ```sql
 CHANGE MASTER TO
-MASTER_HOST='24.199.118.85',
+MASTER_HOST='YOUR_MASTER_IP',
 MASTER_USER='slave',
 MASTER_PASSWORD='slave_pass',
 GET_MASTER_PUBLIC_KEY=1,
-SOURCE_LOG_FILE='f9a09b9de829-bin.000004',
-SOURCE_LOG_POS=652;
+SOURCE_LOG_FILE='YOUR_MASTER_LOG_FILE',
+SOURCE_LOG_POS=YOUR_MASTER_LOG_POS;
 ```
 
-then we load the dumped data in from bash or shell:
+(p.s: LOG_POS is a number)
+
+then we load the dumped data in from bash or shell in the slave node:
 
 ```sh
 mysql -uroot -p'simplepass' < dbdump.db;
 ```
 
-then we login to mysql again and hit this query in and done (3 and 4 are remaining):
+then we login to Master node's MYSQL again and hit this query in and done.
 
 ```sql
 START SLAVE;
 ```
+
+as for pt3 and pt4, for replicating wordpress, its exactly the same steps but we use Docker compose to handle mysql variables, etc, the compose file is [located here](https://github.com/EryX0/diginext-answers/blob/main/Session3/part2/mysql-conf-master/compose.yaml)...
+
